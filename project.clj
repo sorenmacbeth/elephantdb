@@ -13,7 +13,7 @@
                  [org.slf4j/slf4j-api "1.6.1"]
                  [edb/kryonet "1.0.4"]
                  [jackknife "0.1.2"]
-                 [hadoop-util "0.2.7"]
+                 [org.clojars.sorenmacbeth/hadoop-util "0.2.8"]
                  [cascading.kryo "0.2.1"]
                  [cascalog/carbonite "1.1.0"]
                  [com.sleepycat/je "5.0.34"]
