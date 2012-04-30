@@ -174,11 +174,6 @@
 
 ;; TODO: Catch errors if we're not dealing specifically with a byte array.
 
-(defn extract-key [^ByteBuffer src]
-  (let [dst (byte-array (.remaining src))]
-    (.get src dst)
-    dst))
-
 (defn kv-service [database]
   (reify ElephantDB$Iface    
     (directKryoMultiGet [_ domain-name keys]
@@ -232,7 +227,7 @@
       (let [get-fn (kv-get-fn this domain-name database)]
         (multi-get get-fn database domain-name key-seq)))
 
-    (get [this domain-name key]
+    (get [this domain-name ^ByteBuffer key]
       (thrift/assert-domain database domain-name)
       (let [get-fn (kv-get-fn this domain-name database)
             ret (byte-array (.remaining key))]
