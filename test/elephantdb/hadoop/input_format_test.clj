@@ -29,24 +29,24 @@
                   (.getRecordReader input-format s conf nil))]
     (mapcat read-reader readers)))
 
-(let [pairs [[(barr 0) (barr 0 2)]
-             [(barr 1) (barr 10 21)]
-             [(barr 2) (barr 9 1)]
-             [(barr 3) (barr 0 2 3)]
-             [(barr 4) (barr 0)]
-             [(barr 5) (barr 1)]
-             [(barr 6) (barr 3)]
-             [(barr 7) (barr 9 9 9 9)]
-             [(barr 8) (barr 9 9 9 1)]
-             [(barr 9) (barr 9 9 2)]
-             [(barr 10) (barr 3)]]]
-  (fact "The record reader should produce what's been added to the
-        domain."
-    (with-sharded-domain [dpath
-                          {:num-shards 6
-                           :coordinator (JavaBerkDB.)
-                           :shard-scheme (HashModScheme.)}
-                          pairs]
-      (read-domain dpath) => pairs)))
+;; (let [pairs [[(barr 0) (barr 0 2)]
+;;              [(barr 1) (barr 10 21)]
+;;              [(barr 2) (barr 9 1)]
+;;              [(barr 3) (barr 0 2 3)]
+;;              [(barr 4) (barr 0)]
+;;              [(barr 5) (barr 1)]
+;;              [(barr 6) (barr 3)]
+;;              [(barr 7) (barr 9 9 9 9)]
+;;              [(barr 8) (barr 9 9 9 1)]
+;;              [(barr 9) (barr 9 9 2)]
+;;              [(barr 10) (barr 3)]]]
+;;   (fact "The record reader should produce what's been added to the
+;;         domain."
+;;     (with-sharded-domain [dpath
+;;                           {:num-shards 6
+;;                            :coordinator (JavaBerkDB.)
+;;                            :shard-scheme (HashModScheme.)}
+;;                           pairs]
+;;       (read-domain dpath) => pairs)))
 
 ;; TODO: test read specific version vs read most recent

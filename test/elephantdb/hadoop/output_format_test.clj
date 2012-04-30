@@ -56,28 +56,28 @@
         (fact (count (.listStatus fs (h/path output-dir))) => 2)
         (check-shards fs lfs output-dir tmp2  data)))))
 
-(fact "Incremental update testing."
-  (t/with-fs-tmp [fs dir1 dir2]
-    (t/with-local-tmp [lfs ltmp1 ltmp2]
-      (mk-presharded-domain fs dir1 (JavaBerkDB.)
-                            {0 [["a" "1"]]
-                             1 [["b" "2"]
-                                ["c" "3"]]})
-      (let [data {0 {"a" "2"
-                     "d" "4"}
-                  1 {"c" "4"
-                     "e" "4"}
-                  2 {"x" "x"}}]
-        (with-open [writer (elephant-writer test-spec
-                                            dir2
-                                            ltmp1
-                                            :indexer (StringAppendIndexer.)
-                                            :update-dir (.mostRecentVersionPath
-                                                         (VersionedStore. dir1)))]
-          (write-data writer data))
-        (check-shards fs lfs dir2 ltmp2
-                      {0 {"a" "12" "d" "4"}
-                       1 {"b" "2" "c" "34" "e" "4"}
-                       2 {"x" "x"}})))))
+;; (fact "Incremental update testing."
+;;   (t/with-fs-tmp [fs dir1 dir2]
+;;     (t/with-local-tmp [lfs ltmp1 ltmp2]
+;;       (mk-presharded-domain fs dir1 (JavaBerkDB.)
+;;                             {0 [["a" "1"]]
+;;                              1 [["b" "2"]
+;;                                 ["c" "3"]]})
+;;       (let [data {0 {"a" "2"
+;;                      "d" "4"}
+;;                   1 {"c" "4"
+;;                      "e" "4"}
+;;                   2 {"x" "x"}}]
+;;         (with-open [writer (elephant-writer test-spec
+;;                                             dir2
+;;                                             ltmp1
+;;                                             :indexer (StringAppendIndexer.)
+;;                                             :update-dir (.mostRecentVersionPath
+;;                                                          (VersionedStore. dir1)))]
+;;           (write-data writer data))
+;;         (check-shards fs lfs dir2 ltmp2
+;;                       {0 {"a" "12" "d" "4"}
+;;                        1 {"b" "2" "c" "34" "e" "4"}
+;;                        2 {"x" "x"}})))))
 
 (future-fact "test errors.")

@@ -11,6 +11,7 @@
             [elephantdb.common.database :as db])
   (:import [elephantdb.persistence JavaBerkDB]
            [elephantdb.document KeyValDocument]
+           [elephantdb Utils]
            [java.nio ByteBuffer]))
 
 ;; TODO: Make the checker chatty.

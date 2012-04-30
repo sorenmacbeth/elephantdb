@@ -10,9 +10,9 @@
             [elephantdb.common.config :as conf]
             [elephantdb.keyval.domain :as dom])
   (:import [java.nio ByteBuffer]
-           [org.apache.thrift7.protocol TBinaryProtocol]
-           [org.apache.thrift7.transport TTransport]
-           [org.apache.thrift7 TException]
+           [org.apache.thrift.protocol TBinaryProtocol]
+           [org.apache.thrift.transport TTransport]
+           [org.apache.thrift TException]
            [elephantdb.common.database Database]
            [elephantdb.common.domain Domain]
            [elephantdb.generated DomainNotFoundException
@@ -174,6 +174,11 @@
 
 ;; TODO: Catch errors if we're not dealing specifically with a byte array.
 
+(defn extract-key [^ByteBuffer src]
+  (let [dst (byte-array (.remaining src))]
+    (.get src dst)
+    dst))
+
 (defn kv-service [database]
   (reify ElephantDB$Iface    
     (directKryoMultiGet [_ domain-name keys]
@@ -206,7 +211,10 @@
         (multi-get get-fn
                    database
                    domain-name
-                   (map (fn [^ByteBuffer x] (.array x))
+                   (map (fn [^ByteBuffer x]
+                          (let [ret (byte-array (.remaining x))]
+                            (.get x ret)
+                            ret))
                         key-seq))))
 
     (multiGetInt [this domain-name key-seq]
@@ -226,8 +234,10 @@
 
     (get [this domain-name key]
       (thrift/assert-domain database domain-name)
-      (let [get-fn (kv-get-fn this domain-name database)]
-        (first (multi-get get-fn database domain-name [(.array key)]))))
+      (let [get-fn (kv-get-fn this domain-name database)
+            ret (byte-array (.remaining key))]
+        (.get key ret)
+        (first (multi-get get-fn database domain-name [ret]))))
     
     (getInt [this domain-name key]
       (thrift/assert-domain database domain-name)
